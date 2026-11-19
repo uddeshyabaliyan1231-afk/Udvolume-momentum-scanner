@@ -1,140 +1,216 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Volume Momentum Scanner</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>UD Volume Momentum Scanner</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#080d18;color:#e8edf7;font-family:Arial,sans-serif}
-header{padding:20px;background:#101a2b;border-bottom:1px solid #26344b}
-h1{margin:0;font-size:22px}
-.sub{color:#91a0b8;font-size:12px;margin-top:7px}
-main{padding:16px;max-width:1200px;margin:auto}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
-.stat,.panel{background:#111b2c;border:1px solid #26344b;border-radius:12px;padding:15px}
-.stat small{color:#91a0b8}
-.stat strong{display:block;font-size:22px;margin-top:8px}
-.status{color:#42d392}
-.toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
-button{background:#2563eb;color:white;border:0;padding:10px 16px;border-radius:8px;font-weight:bold}
-#signals{display:grid;gap:12px}
-.signal{background:#111b2c;border:1px solid #26344b;border-radius:12px;padding:16px}
-.signal-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
-.coin{font-size:18px;font-weight:bold;overflow-wrap:anywhere}
-.direction{font-weight:bold;padding:6px 12px;border-radius:6px}
-.buy{background:#123e31;color:#42d392}
+body{margin:0;background:#080d18;color:#edf2ff;font-family:Arial,sans-serif}
+header{padding:22px;background:#101a2b;border-bottom:1px solid #29364c}
+h1{margin:0;font-size:23px}
+.sub{color:#94a3b8;font-size:12px;margin-top:7px}
+main{max-width:1100px;margin:auto;padding:16px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.card{background:#111c2e;border:1px solid #29364c;border-radius:12px;padding:16px;margin-bottom:13px}
+.label{color:#9aa9c2;font-size:12px}
+.value{font-size:23px;font-weight:bold;margin-top:9px;overflow-wrap:anywhere}
+.green{color:#36d69a}
+.red{color:#ff6578}
+h2{font-size:17px;margin:0 0 15px}
+select,button{padding:13px;border-radius:8px;border:1px solid #34445e;background:#17243a;color:white;font-size:15px}
+select{width:100%;margin-top:10px}
+button{background:#2864e8;border:0;font-weight:bold;cursor:pointer}
+button:disabled{opacity:.5}
+.controls{display:grid;grid-template-columns:1fr 140px;gap:10px;align-items:end}
+.muted{color:#8b9ab2;font-size:12px;margin-top:10px}
+.signal{background:#111c2e;border:1px solid #29364c;border-radius:12px;padding:17px;margin-top:12px}
+.signalHead{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.coin{font-size:19px;font-weight:bold}
+.tag{padding:7px 12px;border-radius:7px;font-weight:bold}
+.buy{background:#123e31;color:#36d69a}
 .sell{background:#481d2a;color:#ff7188}
-.details{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
-.detail small{display:block;color:#91a0b8;font-size:11px;margin-bottom:5px}
+.details{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:18px}
+.detail small{display:block;color:#91a0b8;font-size:11px;margin-bottom:6px}
 .detail strong{font-size:14px;overflow-wrap:anywhere}
-.empty{text-align:center;padding:45px 15px;color:#91a0b8}
-#error{color:#ff7188;font-size:12px;margin-top:10px}
-footer{text-align:center;color:#65748c;padding:25px;font-size:11px}
-@media(max-width:600px){
-.stats{grid-template-columns:repeat(2,1fr)}
-.details{grid-template-columns:repeat(2,1fr)}
-h1{font-size:19px}
-}
+.empty{text-align:center;padding:40px 15px;color:#9aa9c2}
+.empty strong{display:block;font-size:25px;margin-bottom:10px;color:#edf2ff}
+.statusline{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:14px 0}
+#message{font-size:12px;color:#f6bd60;margin-top:10px}
+footer{text-align:center;color:#66758d;padding:22px;font-size:11px}
+@media(max-width:650px){.grid{grid-template-columns:repeat(2,1fr)}.details{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
 <header>
-<h1>Volume Momentum Scanner</h1>
-<div class="sub">CoinDCX Futures · 5M Entry · 15M / 1H Confirmation</div>
+<h1>UD VOLUME MOMENTUM SCANNER</h1>
+<div class="sub">COINDCX FUTURES · 5M ENTRY · 15M + 1H TREND CONFIRMATION</div>
 </header>
 
 <main>
-<div class="stats">
-<div class="stat"><small>Scanner Status</small><strong id="status" class="status">CONNECTING</strong></div>
-<div class="stat"><small>Pairs Scanned</small><strong id="scanned">--</strong></div>
-<div class="stat"><small>Trade-Ready Signals</small><strong id="count">0</strong></div>
+<div class="grid">
+<div class="card"><div class="label">SCANNER STATUS</div><div class="value" id="status">CONNECTING</div></div>
+<div class="card"><div class="label">PAIRS SCANNED</div><div class="value" id="scanned">0</div></div>
+<div class="card"><div class="label">ACTIVE PAIRS</div><div class="value" id="active">0</div></div>
+<div class="card"><div class="label">TRADE SIGNALS</div><div class="value" id="count">0</div></div>
 </div>
 
-<div class="toolbar">
+<div class="card">
+<h2>MARKET SCAN CONTROL</h2>
+<div class="controls">
 <div>
-<strong>Level 1 Trade Signals</strong>
-<div class="sub" id="updated">Waiting for live data...</div>
+<div class="label">SELECT NUMBER OF COINS</div>
+<select id="scanLimit">
+<option value="100">100 Coins</option>
+<option value="200">200 Coins</option>
+<option value="500">500 Coins</option>
+<option value="1000">1000 Coins</option>
+<option value="ALL">All Active Coins</option>
+</select>
 </div>
-<button onclick="refreshData()">Refresh Now</button>
+<button id="applyBtn" onclick="applyLimit()">APPLY</button>
+</div>
+<div class="muted" id="selected">Loading current scan setting...</div>
+<div id="message"></div>
+</div>
+
+<div class="statusline">
+<strong>LEVEL 1 — TRADE READY SIGNALS</strong>
+<span class="muted" id="lastScan">Waiting for first scan</span>
 </div>
 
 <div id="signals">
-<div class="panel empty">Scanner se live data ka intezar hai...</div>
+<div class="card empty"><strong>CONNECTING</strong>Loading scanner data...</div>
 </div>
-<div id="error"></div>
+
+<div class="card">
+<h2>SCANNER DIAGNOSTICS</h2>
+<div class="details">
+<div class="detail"><small>API ERRORS</small><strong id="errors">0</strong></div>
+<div class="detail"><small>SCAN LIMIT</small><strong id="limitStatus">ALL</strong></div>
+<div class="detail"><small>SERVER MESSAGE</small><strong id="serverMessage">Starting</strong></div>
+</div>
+</div>
 </main>
 
-<footer>Signals are risk-filtered, not guaranteed. Always verify before trading.</footer>
+<footer>Risk filters reduce exposure but cannot guarantee zero liquidity traps or profitable trades.</footer>
 
 <script>
-const $ = id => document.getElementById(id);
+const $=id=>document.getElementById(id);
+let busy=false;
 
-function price(value){
- if(value===undefined || value===null || !Number.isFinite(Number(value))) return "--";
- return Number(value).toPrecision(7);
+function formatPrice(value){
+ if(value===undefined||value===null||!Number.isFinite(Number(value)))return "--";
+ return Number(value).toPrecision(8).replace(/\.?0+$/,"");
+}
+
+function labelLimit(value){
+ return value==="ALL"?"All Active Coins":value+" Coins";
+}
+
+async function loadSettings(){
+ try{
+  const response=await fetch("/api/settings");
+  if(!response.ok)throw new Error("Settings API unavailable");
+  const data=await response.json();
+  $("scanLimit").value=String(data.selectedScanLimit??"ALL");
+  $("selected").textContent="Current selection: "+labelLimit(String(data.selectedScanLimit??"ALL"));
+ }catch(error){
+  $("message").textContent="Settings load error: "+error.message;
+ }
+}
+
+async function applyLimit(){
+ if(busy)return;
+ busy=true;
+ $("applyBtn").disabled=true;
+ const value=$("scanLimit").value;
+ $("message").textContent="Updating scan limit...";
+ try{
+  const response=await fetch("/api/settings",{
+   method:"POST",
+   headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({scanLimit:value})
+  });
+  const data=await response.json();
+  if(!response.ok)throw new Error(data.message||"Could not update scan limit");
+  $("selected").textContent="Current selection: "+labelLimit(value);
+  $("message").textContent="Scan limit updated successfully.";
+  await refresh();
+ }catch(error){
+  $("message").textContent="Update failed: "+error.message;
+ }finally{
+  busy=false;
+  $("applyBtn").disabled=false;
+ }
 }
 
 function renderSignals(data){
- const list = Array.isArray(data) ? data : (data.signals || []);
- $("count").textContent = list.length;
+ const list=Array.isArray(data)?data:(data.signals||[]);
+ $("count").textContent=list.length;
 
  if(!list.length){
-  $("signals").innerHTML = '<div class="panel empty"><h2>NO TRADE</h2><p>Abhi koi setup saari mandatory conditions pass nahi kar raha.</p></div>';
+  $("signals").innerHTML='<div class="card empty"><strong>NO TRADE</strong>No coin has passed all mandatory scanner filters.</div>';
   return;
  }
 
- $("signals").innerHTML = list.map(s=>{
-  const side = String(s.direction || s.signal || "").toUpperCase();
-  const isBuy = side.includes("BUY") || side.includes("LONG");
-  const direction = isBuy ? "BUY" : "SELL";
+ $("signals").innerHTML=list.map(signal=>{
+  const direction=String(signal.direction||"").toUpperCase();
+  const isBuy=direction==="BUY";
   return `
   <div class="signal">
-   <div class="signal-top">
-    <div class="coin">${s.symbol || s.pair || "Unknown"}</div>
-    <div class="direction ${isBuy ? "buy" : "sell"}">${direction}</div>
+   <div class="signalHead">
+    <div class="coin">${signal.coin||signal.pair||"Unknown coin"}</div>
+    <span class="tag ${isBuy?"buy":"sell"}">${direction}</span>
    </div>
    <div class="details">
-    <div class="detail"><small>ENTRY</small><strong>${price(s.entry)}</strong></div>
-    <div class="detail"><small>STOP LOSS</small><strong>${price(s.stopLoss ?? s.sl)}</strong></div>
-    <div class="detail"><small>TARGET</small><strong>${price(s.target)}</strong></div>
-    <div class="detail"><small>15M TREND</small><strong>${s.trend15m || "--"}</strong></div>
-    <div class="detail"><small>1H TREND</small><strong>${s.trend1h || "--"}</strong></div>
-    <div class="detail"><small>VOLUME RATIO</small><strong>${s.volumeRatio ?? "--"}</strong></div>
-    <div class="detail"><small>VOLUME MA RISE</small><strong>${s.volumeMaRise ?? "--"}</strong></div>
-    <div class="detail"><small>SPREAD</small><strong>${s.spread ?? "--"}</strong></div>
-    <div class="detail"><small>LIQUIDITY CHECK</small><strong>${s.liquidityPass === false ? "FAILED" : "PASSED"}</strong></div>
+    <div class="detail"><small>ENTRY PRICE</small><strong>${formatPrice(signal.entry)}</strong></div>
+    <div class="detail"><small>STOP LOSS</small><strong>${formatPrice(signal.stopLoss)}</strong></div>
+    <div class="detail"><small>TARGET</small><strong>${formatPrice(signal.target)}</strong></div>
+    <div class="detail"><small>15M TREND</small><strong>${signal.trend15m||"--"}</strong></div>
+    <div class="detail"><small>1H TREND</small><strong>${signal.trend1h||"--"}</strong></div>
+    <div class="detail"><small>VOLUME MA RISE</small><strong>${signal.volumeMARisePercent??"--"}%</strong></div>
+    <div class="detail"><small>VOLUME RATIO</small><strong>${signal.volumeRatio??"--"}</strong></div>
+    <div class="detail"><small>ORDERBOOK SPREAD</small><strong>${signal.spreadPercent??"--"}%</strong></div>
+    <div class="detail"><small>LIQUIDITY / TRAP CHECK</small><strong>${signal.liquidityStatus||"--"} / ${signal.trapProtection||"--"}</strong></div>
    </div>
   </div>`;
  }).join("");
 }
 
-async function refreshData(){
+async function refresh(){
  try{
-  $("error").textContent = "";
-  const [statusRes, signalsRes] = await Promise.all([
+  const [statusResponse,signalResponse]=await Promise.all([
    fetch("/api/status"),
    fetch("/api/signals")
   ]);
+  if(!statusResponse.ok||!signalResponse.ok)throw new Error("Scanner API unavailable");
 
-  if(!statusRes.ok || !signalsRes.ok) throw new Error("API response error");
+  const status=await statusResponse.json();
+  const signalData=await signalResponse.json();
 
-  const status = await statusRes.json();
-  const signals = await signalsRes.json();
+  $("status").textContent=status.running?"SCANNING":"ONLINE";
+  $("status").className="value "+(status.running?"green":"");
+  $("scanned").textContent=status.scanned??0;
+  $("active").textContent=status.activePairs??status.totalPairs??0;
+  $("errors").textContent=status.errors??0;
+  $("limitStatus").textContent=labelLimit(String(status.selectedScanLimit??"ALL"));
+  $("serverMessage").textContent=status.message||"--";
+  $("lastScan").textContent=status.lastScan
+   ?"Last scan: "+new Date(status.lastScan).toLocaleString()
+   :"Waiting for first completed scan";
 
-  $("status").textContent = status.status || (status.running ? "RUNNING" : "ONLINE");
-  $("scanned").textContent = status.scanned ?? status.totalPairs ?? "--";
-  $("updated").textContent = "Last updated: " + new Date().toLocaleTimeString();
-
-  renderSignals(signals);
- }catch(e){
-  $("status").textContent = "CONNECTING";
-  $("error").textContent = "Live API connection nahi ho pa raha. Server response check ho raha hai.";
+  renderSignals(signalData);
+ }catch(error){
+  $("status").textContent="API ERROR";
+  $("status").className="value red";
+  $("message").textContent=error.message;
  }
 }
 
-refreshData();
-setInterval(refreshData, 10000);
+loadSettings().then(refresh);
+setInterval(refresh,7000);
 </script>
 </body>
 </html>
